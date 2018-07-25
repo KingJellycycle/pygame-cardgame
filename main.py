@@ -12,9 +12,18 @@ cards = cards()
 player = player("Player1",cards.getStandard())
 
 def main():
-    print("Hi")
-    print(player.deck[0][1])
-    player.play()
+    print("Main Initialising")
+    print("=================")
+    print("")
+    print("Player Hand: ")
+    print(player.hand)
+    print("=================")
+    print("")
+    player.play(int(input()),table)
+
+
+    print(table)
+    print(player.deck)
     
 
 
