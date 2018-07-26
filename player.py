@@ -29,9 +29,8 @@ class player:
             
         return temptable
 
-
-    def play(self, cardno, tables):
+    def play(self, cardno, side):
         print(self.hand[cardno])
-        tables[0].append(self.hand[cardno])
+        side.append(self.hand[cardno])
         del self.hand[cardno]
         
