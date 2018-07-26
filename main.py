@@ -1,30 +1,12 @@
-from cards import *
-from player import *
+import game
 
-table = [
-    #Player 1
-    [],
-    #Player 2
-    []
-]
-
-cards = cards()
-player = player("Player1",cards.getStandard())
+isRunning = 1
 
 def main():
-    print("Main Initialising")
-    print("=================")
-    print("")
-    print("Player Hand: ")
-    print(player.hand)
-    print("=================")
-    print("")
-    player.play(int(input()),table)
 
+    game.load()
 
-    print(table)
-    print(player.deck)
-    
-
+    while (isRunning == 1):
+        game.update()
 
 main()

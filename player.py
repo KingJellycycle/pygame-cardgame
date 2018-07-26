@@ -16,7 +16,7 @@ class player:
         temptable = []
         for x in range(0,amount):
             print("X - ",x," Amount - ",amount)
-            y = randint(0,len(self.deck))
+            y = randint(0,len(self.deck)-1)
             print("=======")
             print("Y - ",x)
             print(y)
@@ -27,11 +27,11 @@ class player:
 
             temptable.append([self.deck[y][0],self.deck[y][1]])
             
-            
         return temptable
 
 
     def play(self, cardno, tables):
         print(self.hand[cardno])
         tables[0].append(self.hand[cardno])
-        self.hand[cardno] = []
+        del self.hand[cardno]
+        
