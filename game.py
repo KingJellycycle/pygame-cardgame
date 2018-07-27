@@ -1,4 +1,4 @@
-from cards import *
+from cardgame import *
 from player import *
 
 table = [
@@ -8,9 +8,9 @@ table = [
     []
 ]
 
-cards = cards()
-playerone = player("Player1",cards.getStandard())
-playertwo = player("Player2",cards.getStandard())
+cardgame = cardgame()
+playerone = player("Player1",cardgame.getStandard())
+playertwo = player("Player2",cardgame.getStandard())
 turn = [0,0]
 
 
@@ -45,6 +45,7 @@ def PlayPhase(player,table,i):
     print(decode(table[i]))
     print("=================")
     print("Enemy side:")
+    cardgame.Summon(table,cardgame.cards[1][0])
     if (i == 1):
         print(decode(table[0]))
     else:
@@ -71,6 +72,6 @@ def SwitchPhase(player,table,i):
 def decode(array):
     temp = []
     for x in range(0,len(array)):
-        temp.append(cards.cards[array[x][0]][array[x][1]][0])
+        temp.append(cardgame.cards[array[x][0]][array[x][1]][0])
 
     return temp
