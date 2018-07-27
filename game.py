@@ -25,16 +25,18 @@ def update():
         turn[0] += 1
 
         if (turn[1] == 0):
-            PlayerPhase(playerone,table,0)
+            PlayPhase(playerone,table,0)
             turn[1] = 1
 
         if (turn[1] == 1):
-            PlayerPhase(playertwo,table,1)
+            
+            PlayPhase(playertwo,table,1)
             turn[1] = 0
 
 
-def PlayerPhase(player,table,i):
-    print("Turn: ",turn[0])
+def PlayPhase(player,table,i):
+    print("Summon Phase")
+    print("============")
     print("Player Hand: ",player.name)
     print(decode(player.hand))
     print(player.hand)
@@ -49,7 +51,22 @@ def PlayerPhase(player,table,i):
         print(decode(table[1]))
         
     player.play(int(input()),table[i])
+    AttackPhase(player,table,i)
 
+def AttackPhase(player,table,i):
+    print("=======")
+    print("Attack Phase")
+    print("=======")
+    input()
+    SwitchPhase(player,table,i)
+    pass
+
+def SwitchPhase(player,table,i):
+    print("=======")
+    print("Switch Phase")
+    print("=======")
+    input()
+    pass
 
 def decode(array):
     temp = []
