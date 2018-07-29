@@ -10,23 +10,26 @@ class player:
         self.armor = flag[1]
         self.attack = flag[2]
         
-        self.hand = self.draw(5)
+        self.hand = []
+        self.draw(5)
+        print(self.hand)
 
     def draw(self, amount, type=-1):
-        temptable = []
         for x in range(0,amount):
-            print("X - ",x)
-            y = randint(0,len(self.deck)-1)
-            print("Y - ",y)
-            print("=======")
-            self.deck[y][2] -= 1
+            if (len(self.hand) <= 6):
+                y = randint(0,len(self.deck)-1)
+                self.deck[y][1] -= 1
+                self.hand.append(self.deck[y][0])
+                if (self.deck[y][1] <= 0):
+                    del self.deck[y]    
+            else:
+                y = randint(0,len(self.deck)-1)
+                self.deck[y][1] -= 1
 
-            temptable.append([self.deck[y][0],self.deck[y][1]])
-
-            if (self.deck[y][2] <= 0):
-                del self.deck[y]            
+                if (self.deck[y][1] <= 0):
+                    del self.deck[y]
             
-        return temptable
+        
 
     def play(self, cardno, side):
         print(self.hand[cardno])

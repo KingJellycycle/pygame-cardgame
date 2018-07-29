@@ -7,7 +7,7 @@ pygame.display.set_caption('Cards Of Legends')
 clock = pygame.time.Clock()
 fps = 60
 
-gameDisp = pygame.display.set_mode((800, 600), pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE)
+gameDisp = pygame.display.set_mode((800, 600), pygame.HWSURFACE|pygame.DOUBLEBUF)
 
 def quitfunc():
     pygame.quit()
@@ -24,6 +24,5 @@ while True:
 
     pygame.display.update()
     clock.tick(fps)
-
 
 pygame.quit()
