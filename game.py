@@ -7,6 +7,7 @@ playerone = player("Player1",cardgame.getStandard())
 playertwo = player("Player2",cardgame.getStandard())
 
 GS = 0
+Phase = "Summon"
 
 bg = pygame.image.load("./assets/images/board.png")
 bgrect = bg.get_rect()
@@ -25,24 +26,30 @@ def draw(surface):
 
         # BG
         surface.blit(bg, bgrect)
+        if (Phase == "Summon"):
+            # Draw Cards
+
+            # Player one cards
+            card.cardlist[0].pos[0] = card.cardlocation[2][0]
+            card.cardlist[1].pos[0] = card.cardlocation[2][1]
+            card.cardlist[2].pos[0] = card.cardlocation[2][2]
+            card.cardlist[3].pos[0] = card.cardlocation[2][3]
+
+            # Player two cards
+            card.cardlist[0].pos[1] = card.cardlocation[0][0]
+            card.cardlist[1].pos[1] = card.cardlocation[0][1]
+            card.cardlist[2].pos[1] = card.cardlocation[0][2]
+            card.cardlist[3].pos[1] = card.cardlocation[0][3]
+
+            playerone.deck[0].pos[0] = card.cardlocation[0][3]
+            card.draw(surface,0)
+            card.draw(surface,1)
         
-        # Draw Cards
-        print(card.cardlist[0].pos)
-
-        # Player one cards
-        card.cardlist[0].pos[0] = card.cardlocation[2][0]
-        card.cardlist[1].pos[0] = card.cardlocation[2][1]
-        card.cardlist[2].pos[0] = card.cardlocation[2][2]
-        card.cardlist[3].pos[0] = card.cardlocation[2][3]
-
-        # Player two cards
-        card.cardlist[0].pos[1] = card.cardlocation[0][0]
-        card.cardlist[1].pos[1] = card.cardlocation[0][1]
-        card.cardlist[2].pos[1] = card.cardlocation[0][2]
-        card.cardlist[3].pos[1] = card.cardlocation[0][3]
-
-        card.draw(surface,0)
-        card.draw(surface,1)
+        if (Phase == "Attack"):
+            pass
+        
+        if (Phase == "Swap"):
+            pass
 
     pygame.display.flip()
     pass

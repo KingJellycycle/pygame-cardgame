@@ -28,12 +28,13 @@ class cardgame:
     def getStandard(self):
         return [
             # Units
-                [0,2],
-                [1,2],
-                [2,2],
-                [3,4],
-                [4,4],
-                [5,3]
+                [card.cardlist[0],2],
+                [card.cardlist[1],2],
+                [card.cardlist[2],2],
+                [card.cardlist[3],4],
+                [card.cardlist[4],4],
+                [card.cardlist[5],3]
+                
         ]
 
     def deal(self):

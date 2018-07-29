@@ -23,13 +23,13 @@ class card:
         ]
     ]
 
-    def __init__(self,name,image,title,description=None,attack=1,health=1,cost=0,onplay=None,passive=None,isUnqiue=False):
+    def __init__(self,name,image,title,description="...",attack=1,health=1,cost=0,onplay=None,passive=None,isUnqiue=False):
         self.name = name
         self.image = pygame.image.load("./assets/images/"+image+".png")
         self.imagerect = self.image.get_rect()
         self.title = title
         self.description = description
-        self.pos = [[0,0],[75,105]]
+        self.pos = [[-200,-200],[-200,-200]]
         self.scale = 1
         self.size = [121,170]
         self.health = health
@@ -68,9 +68,12 @@ cards = [
 ]
 
 ucards = [
-    ["Sand Soldier","Azir","The Emperor's Follower","Summoned By Azir Himself",3,1,0,None,None,True]
+    ["Sand Soldier","Azir","The Emperor's Follower","Summoned By Azir Himself",3,1,0,None,None,True],
 ]
 
+bcards = []
+
+# Yes create each card once, but create additional cards of those in the deck, and remove them when notlong in use
 for thecards in cards:
     card(*thecards)
 
