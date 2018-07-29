@@ -1,0 +1,17 @@
+Gangplank - Summons 2 barrels on enemy side, if he kills them, adjacent enemys take 5 dmg each turn barrels lose 1 hp
+Quinn - Can see Stealthed enemys
+Karthus - On death deals 2 dmg to all enemy units
+Shaco - Summons boxes (1 atk 1 hp) which fear the attackers (Fear can only happen once), Fear cancels the units actions
+Lulu - Polymorpths seleced units (1 time use)
+Darius - Applies Bleed, Can execute the bleeding unit next turn
+Pyke - Can have another attack after killing a unit on 1 hp, Cannot gain HP (Instead Gains Attack)
+Sion - On play, Rearranges enemies units, On death does 5 attack to an enemy
+Kayn - Blue +5 attack, Red +5 HP with Lifesteal
+Poppy - Hits selected units on field into hand
+Kled - Onplay, Applies Charge to adjacent units
+Bard - Disables Selected Units for 2 turns
+Amumu - Increases All Ally Magic Dmg
+Trundle - Breaks Taunts, and Steals 3 Armor from all units (If they have armor)
+
+Update:
+Azir - Summon Sand Solder on Any selected Unit to assist unit (Deals 2 Extra dmg and can block 2 Damage)
