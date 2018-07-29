@@ -1,9 +1,9 @@
-#import pygame 
-from game import *
+import pygame 
+import game
 
 pygame.init()
 
-pygame.display.set_caption('Cards Of Legends')
+pygame.display.set_caption('R')
 clock = pygame.time.Clock()
 fps = 60
 
@@ -19,11 +19,10 @@ while True:
         if event.type == pygame.QUIT:
             quitfunc()
 
-    update()
-    draw(gameDisp)
+    game.update()
+    game.draw()
 
     pygame.display.update()
     clock.tick(fps)
-
 
 pygame.quit()
