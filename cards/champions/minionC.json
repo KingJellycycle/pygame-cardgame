@@ -1,0 +1,11 @@
+{
+"Name": "MinionC",
+"Title": "Caster minion!",
+"Image": "MinionC",
+"Description": "Caster minion!",
+"On-Play":"None",
+"Passive":"None",
+"Attack":3,
+"Health":1,
+"Cost":2
+}

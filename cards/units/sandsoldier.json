@@ -1,0 +1,12 @@
+{
+"Name": "Sand Soldier",
+"Title": "The Emperor's Follower",
+"Image": "Azir",
+"Description": "Summoned By Azir Himself",
+"On-Play":"",
+"Passive":"",
+"Attack":3,
+"Health":1,
+"Cost":0,
+"IsUnit": true
+}

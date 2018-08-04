@@ -1,19 +1,16 @@
 from random import randint
 
-class player:
+class Player:
     
-    def __init__(self,name,deck,flag=[30,0,0]):
+    def __init__(self,name,deck,health,armor,attack):
         self.name = name
         self.deck = deck
-
-        self.health = flag[0]
-        self.armor = flag[1]
-        self.attack = flag[2]
-        
+        self.health = health
+        self.armor = armor
+        self.attack = attack
         self.hand = []
-        self.draw(5)
-        print(self.hand)
 
+'''
     def draw(self, amount, type=-1):
         for x in range(0,amount):
             if (len(self.hand) <= 6):
@@ -35,4 +32,4 @@ class player:
         print(self.hand[cardno])
         side.append(self.hand[cardno])
         del self.hand[cardno]
-        
+'''

@@ -1,18 +1,21 @@
-from card import *
+from random import randint
+from cards import *
+from player import *
 
 class cardgame:
 
     def __init__(self):
-        # Cards will work like this
-        print("Initialising cards and various other setup things!")
+        print("cardgame.py - Initialising Cardgame.py and various other setup things!")
         
+        self.cardlist = []
+        self.turn = [0,0]
+
         self.table = [
             #Player 1
             [],
             #Player 2
             []
         ]
-        self.turn = [0,0]
         
         self.spells = [                
                 ["Heal", "Heals selected Unit",3],
@@ -25,30 +28,65 @@ class cardgame:
             ["Stun"]
         ]
 
-    def getStandard(self):
+        self.players = [
+            [Player("one",self.getStandardDeck(),30,0,0)],
+            [Player("two",self.getStandardDeck(),30,0,0)]
+        ]
+        
+        print("cardgame.py - Player 1: ",self.players[0])
+        print("")
+        print("cardgame.py - Player 2: ",self.players[1])
+        print("=========================================")
+        print("cardgame.py - Player 1 Hand: ",self.players[0][0].deck)
+        print("")
+        print("cardgame.py - Player 2 Hand: ",self.players[1][0].deck)
+        print("=========================================")
+        print("")
+
+    def draw(self,surface):
+        pass
+
+    def update(self):
+        pass
+
+	#
+    def getCard(self,position):
+        return Card.cardlist[position]
+
+    def drawCard(self,target,amount=1,type=-1):
+        for x in range(0,amount):
+            if (len(target.hand) <= 6):
+                y = randint(0,len(target.deck)-1)
+                target.deck[y][1] -= 1
+                target.hand.append(target.deck[y][0])
+            else:
+                y = randint(0,len(target.deck)-1)
+                target.deck[y][1] -= 1
+        
+        if (target.deck[y][1] <= 0):
+            del target.deck[y]
+            
+
+    def summonCard(self,entity,amount=1,location=-1):
+        # Summons a card
+        for x in range(0,amount):
+            print("Summoned - ",entity.name)
+            self.table[self.turn[1]].append(entity)
+
+    def playCard(self,card,location):
+        self.table[self.turn[1]].append(card)
+        del card
+		
+    def destoryCard(self,entity):
+        pass
+
+    def getStandardDeck(self):
         return [
             # Units
-                [card.cardlist[0],2],
-                [card.cardlist[1],2],
-                [card.cardlist[2],2],
-                [card.cardlist[3],4],
-                [card.cardlist[4],4],
-                [card.cardlist[5],3]
-                
+                [self.getCard(0),5],
+                [self.getCard(1),5],
+                [self.getCard(2),5],
+                [self.getCard(3),5],
+                [self.getCard(4),5],
+                [self.getCard(5),5]       
         ]
-
-    def deal(self):
-        return 0
-
-    def summon(self,entity,amount=1,location=-1):
-        # location = side of current unit
-        for x in range(0,amount):
-            print("Summoned - ",self.decode(entity))
-            self.table[self.turn[1]].append(entity)
-        pass
-        
-    def decode(self,array):
-        temp = []
-        for x in range(0,len(array)):
-            temp.append(card.cardlist[array[x]].name)
-        return temp

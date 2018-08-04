@@ -1,0 +1,11 @@
+{
+"Name": "Azir",
+"Title": "The Emperor of the Sands",
+"Image": "Azir",
+"Description": "Summons 1 Sand Soldier\n\nSand Soldiers - 3 Attack, 1 Health",
+"On-Play":"Summon(Sand Soldier,3,1)",
+"Passive":"",
+"Attack":2,
+"Health":2,
+"Cost":3
+}

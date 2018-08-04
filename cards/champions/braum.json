@@ -1,0 +1,11 @@
+{
+"Name": "Braum",
+"Title":"The Heart of Freljord",
+"Image": "Braum",
+"Description": "Becomes a Taunt unit.",
+"On-Play":"Taunt()",
+"Passive":"",
+"Attack":2,
+"Health":6,
+"Cost":3
+}
