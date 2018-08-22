@@ -1,0 +1,23 @@
+Cards
+==========
+- Get overlay and put on card BG
+- Get text to be on overlay
+- Scaling for all componenets on card
+
+Camera 
+==========
+-
+-
+-
+
+UI
+==========
+-
+-
+-
+
+Cardgame
+==========
+-
+-
+-

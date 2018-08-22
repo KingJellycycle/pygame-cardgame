@@ -1,0 +1,65 @@
+Game
+	Init()
+		Stuff
+
+	draw()
+		draw stuff
+
+	update()
+		Update stuff
+
+UI()
+Global Ui variables such as 
+ - Camera
+ - UI colours
+ - Elements
+these can be called by all objects
+
+	Init()
+		size
+		pos
+		baseColour
+		hasBorder
+	
+	Update()
+		Variables
+
+	Draw()
+		Pygame Stuff
+
+Text(UI)
+	Init()
+		Text
+		stuff
+		super().Init(stuff)
+
+	Update()
+		Update Stuff
+		super().update()
+	
+	Draw()
+		Draw stuff
+		super().draw()
+
+Button(UI)
+	Init()
+		hoverColour
+		pressColour
+		defaultColour
+		action
+		isEnabled
+		Text = Text(stuff)
+
+	Update()
+		Stuff
+		If mouse stuff
+			Stuff
+			if mclick
+				action()
+		Text.update()
+		super().update()
+		
+	Draw()
+		Stuff
+		Text.draw()
+		super().Draw()

@@ -1,6 +1,7 @@
 from random import randint
 from cards import *
 from player import *
+from UI import *
 
 class cardgame:
 
@@ -43,7 +44,11 @@ class cardgame:
         print("=========================================")
         print("")
 
-    def draw(self,surface):
+    def draw(self):
+        # for each card in the card list call its draw function
+        #for cards in Card.cardlist:
+        #    cards.draw()
+
         pass
 
     def update(self):
@@ -51,7 +56,8 @@ class cardgame:
 
 	#
     def getCard(self,position):
-        return Card.cardlist[position]
+        card = Cards.cardlist[position]
+        return card
 
     def drawCard(self,target,amount=1,type=-1):
         for x in range(0,amount):

@@ -1,42 +1,64 @@
 import pygame
+from UI import *
 
 print("cards.py - Creating Cards!")
 
-class Card:
+class Cards:
     cardlist = []
-    def __init__(self, name, image, title, description, cost):
+    deco = [    
+        pygame.image.load("./assets/images/cards/deco/Overlay.png"),
+        pygame.image.load("./assets/images/cards/deco/Back.png"),
+        pygame.image.load("./assets/images/cards/deco/Border.png")
+    ]
+
+    def __init__(self, name, image, title, description, cost, pos=[0,0]):
         self.name = name
         self.image = image
         self.title = title
         self.description = description
         self.cost = cost
+        self.scale = 1
+        self.pos = pos
+        self.elements = [
+            #Text(self.name,24,(225,255,255),"Game",self.pos)
+        ]
 
-        Card.cardlist.append(self)
+        Cards.cardlist.append(self)
 
-class Champion(Card):
+    def update(self):
+        for element in self.elements:
+            element.update()
+            element.draw()
 
-    def __init__(self, name, image, title, description, attack, health, cost, onplay=None,passive=None):
+class Champion(Cards):
+
+    def __init__(self, name, image, title, description, attack, health, cost, pos=[0,0], onplay=None,passive=None):
         self.health = health
         self.attack = attack
         self.onplay = onplay
         self.passive = passive
 
-        Card.__init__(self, name, image, title, description, cost)
-
+        Cards.__init__(self, name, image, title, description, cost, pos)
 
 class Unit(Champion):
-    def __init__(self, name, image, title, description, attack, health, cost, onplay=None,passive=None):
+    def __init__(self, name, image, title, description, attack, health, cost, pos=[0,0], onplay=None,passive=None):
         self.isUnit = True
 
-        Champion.__init__(self, name, image, title, description, attack, health, cost, onplay=None,passive=None)
-
-class Spell(Card):
+        Champion.__init__(self, name, image, title, description, attack, health, cost, pos, onplay=None,passive=None)
     
-    def __init__(self, name, image, title, description, cost, onplay=None, passive=None):
+    def draw(self):
+        pass
+
+class Spell(Cards):
+    
+    def __init__(self, name, image, title, description, cost, pos=[0,0], onplay=None, passive=None):
         self.onplay = onplay
         self.passive = passive
 
-        Card.__init__(self, name, image, title, description, cost)
+        Cards.__init__(self, name, image, title, description, cost, pos)
+    
+    def draw(self):
+        pass
 
 champions = [
     #name,image,title,description,attack,health,cost,onplay,passive
@@ -66,3 +88,53 @@ for cards in spells:
 #These cards can be created by the summoner of these unit
 #for cards in units:
     #Unit(*cards)
+
+
+class CardElement():
+    def __init__(self,name,description,cost,size,target,pos,layer=0,parentPos=None):
+        self.type = "UI"
+        self.size = size
+        self.scale = 1
+        self.nameText = name
+        self.titleText = title
+        self.descriptionText = description
+        self.attackText = attack
+        self.healthText = health
+        self.costText = cost
+        self.target = target
+        self.colour = UI.theme[1]
+        self.pos = pos
+        self.layer = layer
+        self.action = action
+        self.parentPos = parentPos
+        if self.parentPos == None:
+            self.parentPos = [0,0]
+    
+        self.name = Text(self.nameText,self.size[2],self.colour,self.target,(self.pos[0]+(self.size[0]/2),20+self.pos[1]))
+        self.title = Text(self.titleText,self.size[2],self.colour,self.target,(self.pos[0]+(self.size[0]/2),35+self.pos[1]))
+        self.description = Text(self.descriptionText,self.size[2],self.colour,self.target,(self.pos[0]+(self.size[0]/2),50+self.pos[1]))
+        self.attack = Text(str(self.attackText),self.size[2],self.colour,self.target,(self.pos[0]+(self.size[0]/2),65+self.pos[1]))
+        self.health = Text(str(self.healthText),self.size[2],self.colour,self.target,(self.pos[0]+(self.size[0]/2),228800+self.pos[1]))
+        self.cost = Text(str(self.costText),self.size[2],self.colour,self.target,(self.pos[0],200+self.pos[1]))
+        
+        UI.elements.append(self)
+        #UI.camera.addObject(target,self)
+
+    def draw(self,pos):
+        pygame.draw.rect(UI.camera.surface,(0,0,0),(pos[0]+self.pos[0],pos[1]+self.pos[1],self.size[0],self.size[1]))
+        self.name.draw(pos)
+        self.title.draw(pos)
+        self.description.draw(pos)
+        self.attack.draw(pos)
+        self.health.draw(pos)
+        self.cost.draw(pos)
+        
+    def update(self):
+        if pygame.mouse.get_pos()[0] > self.pos[0] and pygame.mouse.get_pos()[0] < self.pos[0]+self.size[0] and pygame.mouse.get_pos()[1] > self.pos[1] and pygame.mouse.get_pos()[1] < self.pos[1]+self.size[1]:
+            if pygame.mouse.get_pressed()[0]:
+                self.colour = UI.theme[3]
+                self.action()
+            else:
+                self.colour = UI.theme[2]
+        else:
+            self.colour = UI.theme[1]

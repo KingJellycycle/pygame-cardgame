@@ -1,33 +1,32 @@
 #import pygame 
 from game import *
 
-global settings
+
 settings = [
     # Title
-    "Piltover's Treasury",
+    "Hexwars",
     # Volumes (If i even have sounds)
     [],
     # Misc
     []
 ]
 
-global screenSize
 screenSize = [1024,768]
 
 pygame.init()
-
+pygame.font.init()
 pygame.display.set_caption(settings[0])
 clock = pygame.time.Clock()
 fps = 60
 
-gameDisp = pygame.display.set_mode((screenSize), pygame.HWSURFACE|pygame.DOUBLEBUF)
+window = pygame.display.set_mode((screenSize), pygame.HWSURFACE|pygame.DOUBLEBUF)
 
 # Dim Menu
 #s = pygame.Surface(screenSize)
 #s.set_alpha(200)
 #s.fill((25,25,25))
 
-Camera = Camera(gameDisp,[0,0],screenSize)
+Camera = Camera([0,0],screenSize)
 
 Camera.newScene("Main Menu",[],0,True)
 Camera.newScene("Game",[],1,False)
@@ -37,10 +36,15 @@ Camera.newScene("Pause",[],5,False)
 #Camera.addObject("Main Menu",[text3,textrect3])
 
 UI = UI(Camera)
-UI.createText("YE",24,"Main Menu",[500,500],0)
-UI.createText("YE2",24,"Main Menu",[500,550],0)
+#UI.createText("YE",24,"Main Menu",[500,500])
 
-global gameClock
+MenuText = Text(settings[0],64,(200,200,200),"Main Menu",[screenSize[0]/2,50])
+PlayButton = Button("Play",[250,100,24],"Main Menu",[screenSize[0]/2-100,200],"UI.camera.changeToScene('Game')")
+ExitButton = Button("Exit",[250,100,24],"Main Menu",[screenSize[0]/2-100,350],"pygame.quit()")
+#Button = Button("Test",[2,2,2],"Main Menu",[50,50])
+game = Game(window)
+Camera.addObject("Game",game)
+
 gameClock = 0
 
 gameTick = 0
@@ -54,20 +58,18 @@ while True:
         if event.type == pygame.QUIT:
             quitfunc()
 
-    # WIll use this later
+    # Global tick count + seconds passed
     gameTick += 1
 
     if gameTick % (fps / 1) == 0:
         gameClock += 1
-    
-    # Draws
-    Camera.draw()
+
     # Updates
-    #pygame.draw.rect(gameDisp, (100,100,100), [400,300,100,100])
-    update()
-    
-    # DIMMER BUT WILL ALWAYS BE ON TOP OF CAM :/
-    #gameDisp.blit(s, (0,0))
+    #update()
+
+    # Draws
+
+    Camera.update(window)
 
     pygame.display.update()
     clock.tick(fps)
