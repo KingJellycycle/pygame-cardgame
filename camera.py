@@ -2,9 +2,8 @@ import pygame
 from random import randint
 
 class Camera():
-    # This also is a problem, When grouping items together, the camera only sends them has seperate items...
-    # Can add a value to the second area the rect as 0/1 or something ot indicate that the send object are a group and render
-    # then as so? need to figure this out
+
+    layerRange = 0
     BackgroundColour = [27,18,46]
 
     def __init__(self, pos, size):
@@ -15,6 +14,19 @@ class Camera():
 
     def scale(self, num):
         pass
+
+    def cleanScene(self,name):
+        for scene in self.Scenes:
+            if scene[0] == name:
+                scene[1] = []
+        print("camera.py - Cleaned objects from Scene: ",name)
+    
+    def destoryScene(self,name):
+        for scene in self.Scenes:
+            if scene[0] == name:
+                print(scene)
+                del scene
+        print("camera.py - Destoryed Scene: ",name)
 
     def newScene(self,name,objects,Zindex,render):        
         self.Scenes.append([name,objects,Zindex,render])
@@ -39,15 +51,19 @@ class Camera():
 
     # Run draw methods of each elements
     def update(self,window):
-        self.surface.fill(Camera.BackgroundColour, (self.pos[0],self.pos[1],self.size[0],self.size[1]))
-        
-        for Scenes in self.Scenes:
-            if Scenes[3] == True:
-                for objects in Scenes[1]:
-                    if objects.type == "UI":
-                        objects.update()
-                        objects.draw(self.pos)
-                    if objects.type == "game":
-                        objects.update()
-                        objects.draw()
+        self.surface.fill(Camera.BackgroundColour, (0,0,self.size[0],self.size[1]))
+        for layer in range(-1,self.layerRange):
+            for Scenes in self.Scenes:
+                if Scenes[3] == True:
+                    
+                    for objects in Scenes[1]:
+                        if objects.layer == layer:
+                            if objects.type == "game":
+                                objects.update()
+                                objects.draw()
+                            if objects.type == "UI":
+                                if objects.visible:
+                                    objects.update()
+                                    objects.draw()
+
         window.blit(self.surface,self.pos)
