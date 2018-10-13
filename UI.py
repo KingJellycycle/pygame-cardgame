@@ -1,13 +1,12 @@
 import pygame
-
+pygame.font.init()
 class UI():
-    #pygame.font.init()
     camera = None
-             #Text          Button BG     Button Hover Button click Panel BG
+
     theme = [
         # Text
         (255,255,255),
-        # Button Background
+        # Button Default
         (150,150,150),
         # Button Hover
         (100,100,100),
@@ -16,25 +15,44 @@ class UI():
         # Panel Background
         (20,20,20)
         ]
-    elements = []
-    layerRange = 0
     
-    def __init__(self,camera):
-        UI.camera = camera
+    def __init__(self, pos, target, layer=None):
+        self.pos = pos
+        self.target = target
+
+        if layer == None:
+            self.layer = self.camera.layerRange
+            self.camera.layerRange += 1
+
+        # Auto Defined variables
+        self.updated = True
+        self.visible = True
+        self.scale = 1
+
+    def event(self,event):
+        pass
+
+    def destory(self):
+        del self
+
+    def hasParentCheck(self,hasParent):
+        # Checks if it is required for the camera to render this object!
+        if hasParent == False:
+            self.camera.addObject(self.target,self)
         
-    def wrapText(self, surface, size, text, pos, font=None, color=pygame.Color('black')):
-        if not font:
-            font = pygame.font.SysFont(None, self.size)
+    def wrapText(self, surface, size, text, pos, scale, font=None, color=pygame.Color('black')):
+        #if not font:
+        #    font = pygame.font.SysFont(None, int(self.size*scale))
         words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
         space = font.size(' ')[0]  # The width of a space.
-        max_width, max_height = size[0],size[1]
+        max_width, max_height = size
         x, y = pos
         
         for line in words:
             for word in line:
                 word_surface = font.render(word, 0, color)
-                word_width, word_height = size[0],size[1]
-                if x + word_width >= max_width:
+                word_width, word_height = font.size(word)[0],font.size(word)[1]
+                if word_width >= max_width * self.scale:
                     x = pos[0]  # Reset the x.
                     y += word_height  # Start on new row.
                 surface.blit(word_surface, (x, y))
@@ -44,176 +62,280 @@ class UI():
 
 class Text(UI):
     
-    def __init__(self,text,size,colour,target,pos,hasParent=False,layer=None,wrapping=None):
-        self.type = "UI"
+    def __init__(self,text,pos,size,colour,target,isCenter=True,hasParent=False,wrapLength=None,layer=None):
         self.size = size
-        self.pos = pos
-        self.baseColour = colour
-        self.hasBorder = False
+        self.oldSize = size
+        self.Textcolour = colour
+        self.isCenter = isCenter
         self.text = text
-        self.target = target
-        self.textSurface = pygame.font.SysFont(None, self.size).render(self.text, True, self.baseColour)
-        self.wrapping = wrapping
-        
-        self.visible = True
+        self.newText = text
+
+        # Calls the very top most parent __init__() - UI
+        super().__init__(pos,target,layer)
+
+        self.textFont = pygame.font.Font("./assets/font/font.ttf",int(self.size*self.scale))
+        self.textSurface = self.textFont.render(self.text, True, self.Textcolour)
+        self.wrapLength = wrapLength
+
         self.textRect = self.textSurface.get_rect()
 
-        if layer == None:
-            self.layer = self.camera.layerRange
-            self.camera.layerRange += 1
-        #elif layer > self.camera.layerRange:
+        # At the end of all child objects to check if the object is required to be rendered by the camera's method
+        self.hasParentCheck(hasParent)
 
-        if not hasParent:
-            UI.camera.addObject(self.target,self)
-        else:
-            pass
-    
     def update(self):
-        self.textSurface = pygame.font.SysFont(None, self.size).render(self.text, True, self.baseColour)
-        self.textRect = self.textSurface.get_rect()
-        self.textRect.center = self.pos
+        if self.visible:
+            if self.isCenter:
+                self.textRect.center = self.pos
+            else:
+                self.textRect.left = self.pos[0]
+                self.textRect.top = self.pos[1]
+            # Font problem occurs when closing the game, probably because it wants to update one last time
+            # even though pygame.font has been destoryed
+            #self.updateFont()
+
+            #if not (self.newText == self.text):
+            #    self.newText = self.text
+            #    self.newScale = self.scale
+            #    self.textSurface = pygame.font.SysFont(None, int(self.size*self.scale)).render(self.text, True, self.baseColour)
+            #    self.textRect = self.textSurface.get_rect()
+            #
+            #if not (self.newScale == self.scale):
+            #    self.newText = self.text
+            #    self.newScale = self.scale
+            #    self.textSurface = pygame.font.SysFont(None, int(self.size*self.scale)).render(self.text, True, self.baseColour)
+            #    self.textRect = self.textSurface.get_rect()
 
     def draw(self):
-        if not self.wrapping:
+        if self.visible:
+        #if not self.wrapping:
+            
+            if self.updated:
+                self.textFont = pygame.font.Font("./assets/font/font.ttf",int(round(self.size*self.scale,0)))
+                self.textSurface = self.textFont.render(self.text, True, self.Textcolour)
+            self.updated = False
             self.camera.surface.blit(self.textSurface,self.textRect)
-        else:
-            self.wrapText(self.camera.surface,[self.wrapping,5],self.text,self.pos,None,self.baseColour)
 
-    def destory(self):
-        del self
+        #else:
+        #    self.wrapText(self.camera.surface,[self.wrapping,6],self.text,self.pos,self.scale,None,self.baseColour)
 
-class Button(UI):
+    # Ew! code
+    def Scale(self,scale):
+        self.updateUI(self.scale,scale)
+        self.scale = scale
 
-    def __init__(self,text,size,target,pos,action=None,layer=None):
-        self.type = "UI"
+    def Text(self,text):
+        self.updateUI(self.text,text)
         self.text = text
-        self.textColour = UI.theme[0]
+
+    def Size(self,size):
+        self.updateUI(self.size,size)
         self.size = size
-        self.target = target
-        self.pos = pos
+
+    def updateUI(self,original,new):
+        if new == original:
+            pass
+        else:
+            self.updated = True
+
+class Button(Text):
+
+    def __init__(self,text,pos,width,height,size,target,hasParent=False,action=None,colour=[UI.theme[1],UI.theme[2],UI.theme[3]],layer=None):
+        
+        self.colours = colour
+        self.colour = self.colours[0]
         self.action = action
-        self.colour = UI.theme[1]
-        self.defaultColour = UI.theme[1]
-        self.hoverColour = UI.theme[2] 
-        self.clickColour = UI.theme[3]
-
-        self.visible = True
         self.pressed = False
+        self.target = target
 
-        if layer == None:
-            self.layer = self.camera.layerRange
-            self.camera.layerRange += 1
+        self.rect = pygame.Rect(pos[0],pos[1],width,height)
 
-        self.text = Text(text,self.size[2],self.textColour,self.target,self.pos,True)
-
-        UI.camera.addObject(self.target,self)
+        Text.__init__(self,text,[self.rect[0]+self.rect[2]/2,self.rect[1]+self.rect[3]/2],size,(255,255,255),target,True,True)
+        
+        self.hasParentCheck(hasParent)
 
     def update(self):
-        
-        if pygame.mouse.get_pos()[0] > UI.camera.pos[0] + self.pos[0] and pygame.mouse.get_pos()[0] < UI.camera.pos[0] + self.pos[0]+self.size[0] and pygame.mouse.get_pos()[1] > UI.camera.pos[1] + self.pos[1] and pygame.mouse.get_pos()[1] < UI.camera.pos[1] + self.pos[1]+self.size[1]:
-            if pygame.mouse.get_pressed()[0]:
-                if self.pressed:
-                    pass
-                else:
-                    self.colour = self.clickColour
-                    if self.action == None:
+        if self.visible:
+            if pygame.mouse.get_pos()[0] > UI.camera.pos[0] + self.rect[0] and pygame.mouse.get_pos()[0] < UI.camera.pos[0] + self.rect[0]+self.rect[2] and pygame.mouse.get_pos()[1] > UI.camera.pos[1] + self.rect[1] and pygame.mouse.get_pos()[1] < UI.camera.pos[1] + self.rect[1]+self.rect[3]:
+                if pygame.mouse.get_pressed()[0]:
+                    if self.pressed:
                         pass
                     else:
-                        for functionNum in range(0,int(len(self.action))):
+                        self.colour = self.colours[2]
+                        if self.action == None:
+                            pass
+                        else:
+                            for functionNum in range(0,int(len(self.action))):
 
-                            if self.action[functionNum][1] == []:
-                                self.action[functionNum][0]()
-                            else: 
-                                self.action[functionNum][0](*self.action[functionNum][1])
-                self.pressed = True
+                                if self.action[functionNum][1] == []:
+                                    self.action[functionNum][0]()
+                                else: 
+                                    self.action[functionNum][0](*self.action[functionNum][1])
+                    self.pressed = True
+                else:
+                    self.pressed = False
+                    self.colour = self.colours[1]
             else:
-                self.pressed = False
-                self.colour = self.hoverColour
-        else:
-            self.colour = self.defaultColour
-        
-        self.text.pos = [self.pos[0]+self.size[0]/2,self.pos[1]+self.size[1]/2]
-        self.text.update()
+                self.colour = self.colours[0]
+
+            Text.update(self)
+            # Update Text Position
+            self.pos = [self.rect[0]+self.rect[2]/2,self.rect[1]+self.rect[3]/2]
+        pass
 
     def draw(self):
-        pygame.draw.rect(UI.camera.surface,self.colour,(self.pos[0],self.pos[1],self.size[0],self.size[1]))
-        self.text.draw()
+        if self.visible:
+            pygame.draw.rect(self.camera.surface,self.colour,self.rect)
+            Text.draw(self)
+        #self.text.draw()
+        
         pass
 
     def changeVisibility(self,state=None):
         if state == None:
             if self.visible:
                 self.visible = False
-                self.text.visible = False
             else:
                 self.visible = True
-                self.text.visible = True
         else:
             self.visible = state
-        
-        self.text.visible = self.visible
 
     def destory(self):
-        self.text.destory()
-        del self
+        Text.destory(self)
+        super().destory()
 
+class Input(UI):
+    def __init__(self,pos,size,target,defaultText="",colour=UI.theme[0],layer=None):
+        self.colour = colour
+        self.text = defaultText
+        self.txt_surface = pygame.font.Font("./assets/font/font.ttf", int(23)).render(self.text, True, self.colour)
+        self.active = False
 
-class Panel(UI):
-    def __init__(self,size,target,pos,layer=None):
-        self.type = "UI"
-        self.colour = UI.theme[4]
-        self.size = size
-        self.target = target
-        self.pos = pos
-        self.visible = True
+        super().__init__(pos,target,layer)
+
+        self.rect = pygame.Rect(self.pos[0], self.pos[1], size[0], size[1])
 
         if layer == None:
             self.layer = self.camera.layerRange
             self.camera.layerRange += 1
 
         self.camera.addObject(self.target,self)
+            
+    def draw(self):
+        if self.visible:
+        # Blit the text & rect.
+            self.camera.surface.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+            pygame.draw.rect(self.camera.surface, self.colour, self.rect, 2)
+
+    def update(self):
+        if self.visible:
+            # Resize the box if the text is too long.
+            width = max(200, self.txt_surface.get_width()+10)
+            self.rect.w = width
+
+    def event(self,event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # If the user clicked on the input_box rect.
+            if self.rect.collidepoint(event.pos):
+                # Toggle the active variable.
+                self.active = not self.active
+            else:
+                self.active = False
+            # Change the current color of the input box.
+            self.colour = UI.theme[1] if self.active else UI.theme[0]
+        if event.type == pygame.KEYDOWN:
+            if self.active:
+                text = None
+                if event.key == pygame.K_RETURN:
+                    #print(self.text)
+                    self.text = ''
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    text = event.unicode
+                if not text == None:
+                    self.text += text
+                text = None 
+                # Re-render the text.
+                self.txt_surface = pygame.font.Font("./assets/font/font.ttf", int(23)).render(self.text, True, self.colour)
+
+class Panel(UI):
+    def __init__(self,pos,width,height,target,hasParent=False,colour=UI.theme[4],layer=None):
+
+        self.colour = colour
+        self.rect = pygame.Rect(pos[0], pos[1], width, height)
+
+        super().__init__(pos,target,layer)
+
+        self.hasParentCheck(hasParent)
 
     def draw(self):
-        pygame.draw.rect(UI.camera.surface,self.colour,(self.pos[0],self.pos[1],self.size[0],self.size[1]))
+        pygame.draw.rect(self.camera.surface,self.colour,self.rect)
 
     def update(self):
         pass
 
-    def destory(self):
-        del self
-
-"""
-class Card(UI):
-    def __init__(self,name,description,cost,size,target,pos,layer=0,parentPos=None):
-        self.type = "UI"
-        self.name = name
-        self.description
-        self.textColour = UI.theme[0]
-        self.size = size
+'''
+class ToolTip(Text):
+    
+    def __init__(self,text,pos,width,height,size,target,hasParent=False,colour=[UI.theme[1],UI.theme[2]],layer=None):
+        self.colours = colour
+        self.colour = self.colours[0]
         self.target = target
-        self.pos = pos
-        self.action = action
-        self.colour = UI.theme[1]
 
-        UI.camera.addObject(self.target,self)
+        self.rect = pygame.Rect(pos[0],pos[1],width,height)
+
+        Text.__init__(self,text,[self.rect[0]+self.rect[2]/2,self.rect[1]+self.rect[3]/2],size,(255,255,255),target,True,True)
         
-        self.text = Text(text,self.size[2],self.textColour,self.target,self.pos)
+        self.hasParentCheck(hasParent)
 
-        UI.elements.append(self)
 
     def update(self):
-        if UI.camera.pos[0] + pygame.mouse.get_pos()[0] > self.pos[0] and UI.camera.pos[0] + pygame.mouse.get_pos()[0] < self.pos[0]+self.size[0] and UI.camera.pos[1] + pygame.mouse.get_pos()[1] > self.pos[1] and UI.camera.pos[1] + pygame.mouse.get_pos()[1] < self.pos[1]+self.size[1]:
-            if pygame.mouse.get_pressed()[0]:
-                self.colour = self.clickColour
-                for functionNum in range(0,len(self.action)/2):
-                    print(functionNum)
-            else:
-                self.colour = self.hoverColour
-        else:
-            self.colour = self.defaultColour
+        if self.visible:
+            if pygame.mouse.get_pos()[0] > UI.camera.pos[0] + self.rect[0] and pygame.mouse.get_pos()[0] < UI.camera.pos[0] + self.rect[0]+self.rect[2] and pygame.mouse.get_pos()[1] > UI.camera.pos[1] + self.rect[1] and pygame.mouse.get_pos()[1] < UI.camera.pos[1] + self.rect[1]+self.rect[3]:
+                if pygame.mouse.get_pressed()[0]:
+                    if self.pressed:
+                        pass
+                    else:
+                        self.colour = self.colours[2]
+                        if self.action == None:
+                            pass
+                        else:
+                            for functionNum in range(0,int(len(self.action))):
 
-        self.text.pos = [self.pos[0]+self.size[0]/2,self.pos[1]+self.size[1]/2]
+                                if self.action[functionNum][1] == []:
+                                    self.action[functionNum][0]()
+                                else: 
+                                    self.action[functionNum][0](*self.action[functionNum][1])
+                    self.pressed = True
+                else:
+                    self.pressed = False
+                    self.colour = self.colours[1]
+            else:
+                self.colour = self.colours[0]
+
+            Text.update(self)
+            # Update Text Position
+            self.pos = [self.rect[0]+self.rect[2]/2,self.rect[1]+self.rect[3]/2]
+        pass
 
     def draw(self):
-        pygame.draw.rect(UI.camera.surface,self.colour,(self.pos[0],self.pos[1],self.size[0],self.size[1]))
-"""
+        if self.visible:
+            pygame.draw.rect(self.camera.surface,self.colour,self.rect)
+            Text.draw(self)
+        #self.text.draw()
+        pass
+
+    def changeVisibility(self,state=None):
+        if state == None:
+            if self.visible:
+                self.visible = False
+            else:
+                self.visible = True
+        else:
+            self.visible = state
+
+    def destory(self):
+        Text.destory(self)
+        super().destory()
+
+'''

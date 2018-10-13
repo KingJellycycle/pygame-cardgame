@@ -1,3 +1,7 @@
+TODO now:
+==========
+- (General) Highscore
+
 Cards
 ==========
 - Get overlay and put on card BG
@@ -21,3 +25,7 @@ Cardgame
 -
 -
 -
+
+General
+==========
+- Highscore system

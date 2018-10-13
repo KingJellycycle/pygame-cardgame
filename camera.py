@@ -1,4 +1,5 @@
 import pygame
+
 from random import randint
 
 class Camera():
@@ -12,8 +13,11 @@ class Camera():
         self.surface = pygame.Surface((self.size))
         self.Scenes = []
 
-    def scale(self, num):
-        pass
+    def destory(self,window):
+        for scenes in self.Scenes:
+            self.destoryScene(scenes[0])
+        window.fill([0,0,0])
+        del self
 
     def cleanScene(self,name):
         for scene in self.Scenes:
@@ -24,7 +28,6 @@ class Camera():
     def destoryScene(self,name):
         for scene in self.Scenes:
             if scene[0] == name:
-                print(scene)
                 del scene
         print("camera.py - Destoryed Scene: ",name)
 
@@ -55,15 +58,16 @@ class Camera():
         for layer in range(-1,self.layerRange):
             for Scenes in self.Scenes:
                 if Scenes[3] == True:
-                    
                     for objects in Scenes[1]:
                         if objects.layer == layer:
-                            if objects.type == "game":
-                                objects.update()
-                                objects.draw()
-                            if objects.type == "UI":
-                                if objects.visible:
-                                    objects.update()
-                                    objects.draw()
+                            objects.update()
+                            objects.draw()
 
         window.blit(self.surface,self.pos)
+
+    # Runs event methods if available
+    def event(self,event):
+        for Scenes in self.Scenes:
+            if Scenes[3] == True:
+                for objects in Scenes[1]:
+                    objects.event(event)
